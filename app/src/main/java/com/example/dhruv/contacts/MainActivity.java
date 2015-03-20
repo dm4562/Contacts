@@ -24,14 +24,14 @@ public class MainActivity extends ActionBarActivity {
 
         final String LOG_TAG = MainActivity.class.getSimpleName();
 
-        String[] selectionArgs = {};
-        String selectionClause = null;
+        String[] selectionArgs = {"1"};
+        String selectionClause = ContactsContract.Contacts.HAS_PHONE_NUMBER + " = ?";
         String sortOrder = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " ASC";
 
         ContentResolver contactsResolver = getContentResolver();
         String [] contactsProjection = {
                 ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+                ContactsContract.Contacts.HAS_PHONE_NUMBER,
                 ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
 
         };
