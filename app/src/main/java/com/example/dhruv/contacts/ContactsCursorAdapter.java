@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.net.URI;
 
 /**
- * Created by dhruv on 3/18/15.
+ * Created by dhruv and nikhil on 3/18/15.
  */
 public class ContactsCursorAdapter extends CursorAdapter {
 

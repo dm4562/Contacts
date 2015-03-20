@@ -27,6 +27,7 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         final String LOG_TAG = MainActivity.class.getSimpleName();
 
         String[] selectionArgs = {"1"};
@@ -100,9 +101,9 @@ public class MainActivity extends ActionBarActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         contactsCursor.moveToPosition(position);
-        long detailsRawContactId = contactsCursor.getLong(contactsCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
+        long detailsRawContactId= contactsCursor.getLong(contactsCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
         Intent detailsActivityIntent = new Intent(this, DetailsActivity.class)
-                .putExtra("rawContactId", detailsRawContactId);
+                .putExtra("detailsRawContactId", detailsRawContactId);
         startActivity(detailsActivityIntent);
 
     }
