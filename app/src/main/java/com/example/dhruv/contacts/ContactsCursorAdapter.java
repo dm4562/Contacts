@@ -1,5 +1,6 @@
 package com.example.dhruv.contacts;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -24,8 +25,6 @@ import java.net.URI;
  */
 public class ContactsCursorAdapter extends CursorAdapter {
 
-    ContentResolver contentResolver;
-
 
     public static class ViewHolder {
         public final ImageView contactImage;
@@ -38,9 +37,8 @@ public class ContactsCursorAdapter extends CursorAdapter {
     }
 
 
-    public ContactsCursorAdapter(Context context, Cursor c, int flags, ContentResolver contentResolver) {
+    public ContactsCursorAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
-        this.contentResolver = contentResolver;
 
     }
 
@@ -61,19 +59,19 @@ public class ContactsCursorAdapter extends CursorAdapter {
         Long contactId = cursor.getLong(cursor.getColumnIndex(Contacts._ID));
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        int contactImageID = cursor.getInt(
-                cursor.getColumnIndex(Contacts.Photo._ID)
-        );
-
-//        int contactPicColIndex = cursor.getColumnIndex(Contacts.Photo.PHOTO);
-//        Uri uri = Uri.parse(cursor.getString(cursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI)));
         Uri uri = Uri.withAppendedPath(Contacts.CONTENT_URI, Long.toString(contactId));
         InputStream inputStream = Contacts.openContactPhotoInputStream(
-                contentResolver,
+                context.getContentResolver(),
                 uri);
         Bitmap image = BitmapFactory.decodeStream(inputStream);
 
-        viewHolder.contactImage.setImageBitmap(image);
+        if (image != null) {
+            viewHolder.contactImage.setImageBitmap(image);
+        } else {
+            viewHolder.contactImage.setImageResource(R.mipmap.ic_launcher);
+        }
+
+
         viewHolder.contactName.setText(
                 cursor.getString(
                 cursor.getColumnIndex(

@@ -1,21 +1,26 @@
 package com.example.dhruv.contacts;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import static android.provider.ContactsContract.*;
 
-import static android.provider.ContactsContract.CommonDataKinds.*;
 
+public class MainActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
 
-public class MainActivity extends ActionBarActivity {
+    private static Cursor contactsCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,20 +30,21 @@ public class MainActivity extends ActionBarActivity {
         final String LOG_TAG = MainActivity.class.getSimpleName();
 
         String[] selectionArgs = {"1"};
-        String selectionClause = ContactsContract.Contacts.HAS_PHONE_NUMBER + " = ?";
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY + " ASC";
+        String selectionClause = Contacts.HAS_PHONE_NUMBER + " = ?";
+        String sortOrder = Contacts.DISPLAY_NAME_PRIMARY + " ASC";
 
         ContentResolver contactsResolver = getContentResolver();
         String [] contactsProjection = {
-                ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.HAS_PHONE_NUMBER,
-                ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
+                Contacts._ID,
+                Contacts.HAS_PHONE_NUMBER,
+                Contacts.DISPLAY_NAME_PRIMARY,
+                Contacts.NAME_RAW_CONTACT_ID
 
         };
 
-        Cursor contactsCursor;
+
         contactsCursor = contactsResolver.query (
-                ContactsContract.Contacts.CONTENT_URI,
+                Contacts.CONTENT_URI,
                 contactsProjection,
                 selectionClause,
                 selectionArgs,
@@ -59,14 +65,12 @@ public class MainActivity extends ActionBarActivity {
             ContactsCursorAdapter contactsAdapter = new ContactsCursorAdapter(
                     this,
                     contactsCursor,
-                    0,
-                    contactsResolver);
+                    0);
 
             ListView view = (ListView) findViewById(R.id.contactslistView);
             view.setAdapter(contactsAdapter);
+            view.setOnItemClickListener(this);
         }
-
-
     }
 
 
@@ -90,5 +94,16 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        contactsCursor.moveToPosition(position);
+        long detailsRawContactId = contactsCursor.getLong(contactsCursor.getColumnIndex(Contacts.NAME_RAW_CONTACT_ID));
+        Intent detailsActivityIntent = new Intent(this, DetailsActivity.class)
+                .putExtra("rawContactId", detailsRawContactId);
+        startActivity(detailsActivityIntent);
+
     }
 }
